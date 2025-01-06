@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func SetupDatabase(user, password, dbname, host string, port int) (*sql.DB, error){
+func SetupDatabase(user string, password string, dbname string, host string, port string) (*sql.DB, error){
 	connStr:=fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=disable", 
 	user, password, dbname, host, port)
 

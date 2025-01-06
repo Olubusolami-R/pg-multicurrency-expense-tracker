@@ -7,7 +7,7 @@ import (
 )
 
 func main(){
-	database, err := db.SetupDatabase("postgres", "lockin25", "expense_tracker", "localhost", 5432)
+	database, err := db.SetupDatabase("postgres", "lockin25", "expense_tracker", "localhost", "5432")
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
