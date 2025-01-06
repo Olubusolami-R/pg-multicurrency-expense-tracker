@@ -1,4 +1,4 @@
-module github/multicurrency-tracker
+module github.com/multicurrency-tracker
 
 go 1.22.1
 
