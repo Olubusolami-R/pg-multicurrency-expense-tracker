@@ -59,7 +59,6 @@ func (r *ExchangeRateRepository) InsertMultipleExchangeRates (exchangeRates []mo
 
 func (r *ExchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error){
 
-	// Fetch all currencies
 	query:="SELECT base_currency, target_currency, rate, updated_at FROM exchange_rates"
 
 	rows,err:=r.DB.Query(query)

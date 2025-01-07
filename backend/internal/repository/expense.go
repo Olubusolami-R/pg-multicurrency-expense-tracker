@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	models "github.com/Olubusolami-R/multicurrency-tracker/internal/models"
@@ -33,4 +34,35 @@ func (r *ExpenseRepository) InsertExpense (
 
 	return nil
 
+}
+
+func (r *ExchangeRateRepository) GetExpenses()([]models.Expense, error){
+
+	query:="SELECT description, amount, currency, createdAt FROM expenses"
+
+	rows,err:=r.DB.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch expenses: %w", err)
+	}
+	defer rows.Close()
+
+	var expenses []models.Expense
+
+	//Iterating through rows
+	for rows.Next() {
+
+		var expense models.Expense
+
+		if err := rows.Scan(&expense.Description, &expense.Amount, &expense.Currency, &expense.CreatedAt); err != nil {
+			return nil, fmt.Errorf("failed to scan row: %w", err)
+		}
+
+		expenses = append(expenses, expense)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error after row iteration: %w", err)
+	}
+
+	return expenses, nil
 }
