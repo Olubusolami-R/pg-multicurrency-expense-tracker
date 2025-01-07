@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/multicurrency-tracker/backend/internal/db"
+	"github.com/Olubusolami-R/multicurrency-tracker/internal/db"
 )
 
 func main(){
