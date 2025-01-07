@@ -55,7 +55,7 @@ func (r *CurrencyRepository) InsertMultipleCurrencies (currencies []models.Curre
 func (r *CurrencyRepository) GetCurrencies()([]models.Currency, error){
 
 	// Fetch all currencies
-	query:="SELECT code, name from currencies"
+	query:="SELECT code, name FROM currencies"
 
 	
 	rows,err:=r.DB.Query(query)

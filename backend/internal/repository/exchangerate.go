@@ -18,6 +18,7 @@ func NewExchangeRateRepository(db *sql.DB) ExchangeRateRepository{
 	return ExchangeRateRepository{DB:db}
 }
 
+
 func (r *ExchangeRateRepository) InsertSingleExchangeRate (
 	baseCurrency models.Currency, 
 	targetCurrency models.Currency, 
@@ -35,7 +36,7 @@ func (r *ExchangeRateRepository) InsertSingleExchangeRate (
 
 }
 
-func (r *CurrencyRepository) InsertMultipleExchangeRates (exchangeRates []models.ExchangeRate) error {
+func (r *ExchangeRateRepository) InsertMultipleExchangeRates (exchangeRates []models.ExchangeRate) error {
 
 	query := "INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at) VALUES "
 	values := []interface{}{}
@@ -56,3 +57,34 @@ func (r *CurrencyRepository) InsertMultipleExchangeRates (exchangeRates []models
 	return nil
 }
 
+func (r *ExchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error){
+
+	// Fetch all currencies
+	query:="SELECT base_currency, target_currency, rate, updated_at FROM exchange_rates"
+
+	rows,err:=r.DB.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch currencies: %w", err)
+	}
+	defer rows.Close()
+
+	var exchangeRates []models.ExchangeRate
+
+	//Iterating through rows
+	for rows.Next() {
+
+		var exchangeRate models.ExchangeRate
+
+		if err := rows.Scan(&exchangeRate.BaseCurrency, &exchangeRate.TargetCurrency, &exchangeRate.Rate, &exchangeRate.CreatedAt); err != nil {
+			return nil, fmt.Errorf("failed to scan row: %w", err)
+		}
+
+		exchangeRates = append(exchangeRates, exchangeRate)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error after row iteration: %w", err)
+	}
+
+	return exchangeRates, nil
+}
