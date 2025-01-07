@@ -13,12 +13,14 @@ type CurrencyRepository struct {
 	DB *sql.DB
 }
 
-// Helper function to
+// Helper function to initialize the repository
 func NewCurrencyRepository(db *sql.DB) CurrencyRepository{
 	return CurrencyRepository{DB:db}
 }
 
+
 func (r *CurrencyRepository) InsertSingleCurrency (code string, name string) error {
+
 	query := "INSERT INTO currencies (code, name) VALUES ($1, $2)"
 	_,err := r.DB.Exec(query, code, name)
 	if err != nil {
@@ -30,6 +32,7 @@ func (r *CurrencyRepository) InsertSingleCurrency (code string, name string) err
 
 // Batch inserts
 func (r *CurrencyRepository) InsertMultipleCurrencies (currencies []models.Currency) error {
+
 	query := "INSERT INTO currencies (code, name) VALUES "
 	values := []interface{}{}
 	placeholders := []string{}
@@ -47,4 +50,37 @@ func (r *CurrencyRepository) InsertMultipleCurrencies (currencies []models.Curre
 		return err
 	}
 	return nil
+}
+
+func (r *CurrencyRepository) GetCurrencies()([]models.Currency, error){
+
+	// Fetch all currencies
+	query:="SELECT code, name from currencies"
+
+	
+	rows,err:=r.DB.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch currencies: %w", err)
+	}
+	defer rows.Close()
+
+	var currencies []models.Currency
+
+	//Iterating through rows
+	for rows.Next() {
+
+		var currency models.Currency
+
+		if err := rows.Scan(&currency.Code, &currency.Name); err != nil {
+			return nil, fmt.Errorf("failed to scan row: %w", err)
+		}
+
+		currencies = append(currencies, currency)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("error after row iteration: %w", err)
+	}
+
+	return currencies, nil
 }
