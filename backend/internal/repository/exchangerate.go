@@ -4,13 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/models"
 )
 
 type ExchangeRateRepository interface{
-	CreateSingleExchangeRate(baseCurrency models.Currency, targetCurrency models.Currency, rate float64, updatedAt time.Time) error
+	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 	GetExchangeRates()([]models.ExchangeRate, error)
 }
@@ -25,15 +24,11 @@ func NewExchangeRateRepository(db *sql.DB) ExchangeRateRepository{
 }
 
 
-func (r *exchangeRateRepository) CreateSingleExchangeRate(
-	baseCurrency models.Currency, 
-	targetCurrency models.Currency, 
-	rate float64, 
-	updatedAt time.Time) error {
+func (r *exchangeRateRepository) CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error {
 
 	query := "INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at) VALUES ($1, $2, $3, $4)"
 	
-	_,err := r.DB.Exec(query, baseCurrency, targetCurrency, rate, updatedAt)
+	_,err := r.DB.Exec(query, exchangeRate.BaseCurrency, exchangeRate.TargetCurrency, exchangeRate.Rate, exchangeRate.CreatedAt)
 	if err != nil {
 		return err
 	}

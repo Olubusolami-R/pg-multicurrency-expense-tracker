@@ -9,7 +9,7 @@ import (
 )
 
 type CurrencyRepository interface {
-	CreateSingleCurrency(code string, name string) error
+	CreateSingleCurrency(currency models.Currency) error
 	CreateMultipleCurrencies(currencies []models.Currency) error
 	GetCurrencies()([]models.Currency, error)
 }
@@ -23,10 +23,10 @@ func NewCurrencyRepository(db *sql.DB) CurrencyRepository{
 	return &currencyRepository{DB:db}
 }
 
-func (r *currencyRepository) CreateSingleCurrency(code string, name string) error {
+func (r *currencyRepository) CreateSingleCurrency(currency models.Currency) error {
 
 	query := "INSERT INTO currencies (code, name) VALUES ($1, $2)"
-	_,err := r.DB.Exec(query, code, name)
+	_,err := r.DB.Exec(query, currency.Code, currency.Name)
 	if err != nil {
 		return err
 	}

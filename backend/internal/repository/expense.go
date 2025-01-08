@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"time"
 
 	models "github.com/Olubusolami-R/multicurrency-tracker/internal/models"
 )
@@ -12,7 +11,7 @@ import (
 // Maybe a manager.go here in repository. The interface will have same name as struct but with Cap letter starting and small letter for struct.
 
 type ExpenseRepository interface{
-	CreateExpense(description string, amount float64 , currency models.Currency, createdAt time.Time) error
+	CreateExpense(expense models.Expense) error
 	GetExpenses()([]models.Expense, error)
 }
 type expenseRepository struct{
@@ -23,15 +22,11 @@ func NewExpenseRepository(db *sql.DB) ExpenseRepository{
 	return &expenseRepository{DB:db}
 }
 
-func (r *expenseRepository) CreateExpense(
-	description string, 
-	amount float64 , 
-	currency models.Currency, 
-	createdAt time.Time) error {
+func (r *expenseRepository) CreateExpense(expense models.Expense) error {
 
 	query := "INSERT INTO expenses (description, amount, currency, createdAt) VALUES ($1, $2, $3, $4)"
 	
-	_,err := r.DB.Exec(query, description, amount, currency, createdAt)
+	_,err := r.DB.Exec(query, expense.Description, expense.Amount, expense.Currency, expense.CreatedAt)
 	if err != nil {
 		return err
 	}
