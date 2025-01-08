@@ -9,17 +9,21 @@ import (
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/models"
 )
 
-type ExchangeRateRepository struct {
+type ExchangeRateRepository interface{
+	CreateSingleExchangeRate(baseCurrency models.Currency, targetCurrency models.Currency, rate float64, updatedAt time.Time) error
+}
+
+type exchangeRateRepository struct {
 	DB *sql.DB
 }
 
 // Helper function to initialize the repository
 func NewExchangeRateRepository(db *sql.DB) ExchangeRateRepository{
-	return ExchangeRateRepository{DB:db}
+	return &exchangeRateRepository{DB:db}
 }
 
 
-func (r *ExchangeRateRepository) CreateSingleExchangeRate (
+func (r *exchangeRateRepository) CreateSingleExchangeRate(
 	baseCurrency models.Currency, 
 	targetCurrency models.Currency, 
 	rate float64, 
@@ -36,7 +40,7 @@ func (r *ExchangeRateRepository) CreateSingleExchangeRate (
 
 }
 
-func (r *ExchangeRateRepository) CreateMultipleExchangeRates (exchangeRates []models.ExchangeRate) error {
+func (r *exchangeRateRepository) CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error {
 
 	query := "INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at) VALUES "
 	values := []interface{}{}
@@ -57,7 +61,7 @@ func (r *ExchangeRateRepository) CreateMultipleExchangeRates (exchangeRates []mo
 	return nil
 }
 
-func (r *ExchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error){
+func (r *exchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error){
 
 	query:="SELECT base_currency, target_currency, rate, updated_at FROM exchange_rates"
 

@@ -23,7 +23,7 @@ func NewCurrencyRepository(db *sql.DB) CurrencyRepository{
 	return &currencyRepository{DB:db}
 }
 
-func (r *currencyRepository) CreateSingleCurrency (code string, name string) error {
+func (r *currencyRepository) CreateSingleCurrency(code string, name string) error {
 
 	query := "INSERT INTO currencies (code, name) VALUES ($1, $2)"
 	_,err := r.DB.Exec(query, code, name)
@@ -35,7 +35,7 @@ func (r *currencyRepository) CreateSingleCurrency (code string, name string) err
 }
 
 // Batch inserts
-func (r *currencyRepository) CreateMultipleCurrencies (currencies []models.Currency) error {
+func (r *currencyRepository) CreateMultipleCurrencies(currencies []models.Currency) error {
 
 	query := "INSERT INTO currencies (code, name) VALUES "
 	values := []interface{}{}
