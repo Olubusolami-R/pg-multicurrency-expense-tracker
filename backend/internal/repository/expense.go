@@ -32,7 +32,6 @@ func (r *expenseRepository) CreateExpense(expense models.Expense) error {
 	}
 
 	return nil
-
 }
 
 func (r *expenseRepository) GetExpenses()([]models.Expense, error){
