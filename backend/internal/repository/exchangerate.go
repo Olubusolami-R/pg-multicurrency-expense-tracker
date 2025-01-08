@@ -11,6 +11,8 @@ import (
 
 type ExchangeRateRepository interface{
 	CreateSingleExchangeRate(baseCurrency models.Currency, targetCurrency models.Currency, rate float64, updatedAt time.Time) error
+	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
+	GetExchangeRates()([]models.ExchangeRate, error)
 }
 
 type exchangeRateRepository struct {
