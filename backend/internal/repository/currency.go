@@ -8,18 +8,22 @@ import (
 	models "github.com/Olubusolami-R/multicurrency-tracker/internal/models"
 )
 
+type CurrencyRepository interface {
+	CreateSingleCurrency(code string, name string) error
+	CreateMultipleCurrencies(currencies []models.Currency) error
+	GetCurrencies()([]models.Currency, error)
+}
 // Handles database operations for currency
-type CurrencyRepository struct {
+type currencyRepository struct {
 	DB *sql.DB
 }
 
 // Helper function to initialize the repository
 func NewCurrencyRepository(db *sql.DB) CurrencyRepository{
-	return CurrencyRepository{DB:db}
+	return &currencyRepository{DB:db}
 }
 
-
-func (r *CurrencyRepository) CreateSingleCurrency (code string, name string) error {
+func (r *currencyRepository) CreateSingleCurrency (code string, name string) error {
 
 	query := "INSERT INTO currencies (code, name) VALUES ($1, $2)"
 	_,err := r.DB.Exec(query, code, name)
@@ -31,7 +35,7 @@ func (r *CurrencyRepository) CreateSingleCurrency (code string, name string) err
 }
 
 // Batch inserts
-func (r *CurrencyRepository) CreateMultipleCurrencies (currencies []models.Currency) error {
+func (r *currencyRepository) CreateMultipleCurrencies (currencies []models.Currency) error {
 
 	query := "INSERT INTO currencies (code, name) VALUES "
 	values := []interface{}{}
@@ -52,7 +56,7 @@ func (r *CurrencyRepository) CreateMultipleCurrencies (currencies []models.Curre
 	return nil
 }
 
-func (r *CurrencyRepository) GetCurrencies()([]models.Currency, error){
+func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
 	// Fetch all currencies
 	query:="SELECT code, name FROM currencies"
