@@ -19,7 +19,7 @@ func NewExpenseRepository(db *sql.DB) ExpenseRepository{
 	return ExpenseRepository{DB:db}
 }
 
-func (r *ExpenseRepository) InsertExpense (
+func (r *ExpenseRepository) CreateExpense (
 	description string, 
 	amount float64 , 
 	currency models.Currency, 

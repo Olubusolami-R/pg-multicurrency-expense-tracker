@@ -19,7 +19,7 @@ func NewExchangeRateRepository(db *sql.DB) ExchangeRateRepository{
 }
 
 
-func (r *ExchangeRateRepository) InsertSingleExchangeRate (
+func (r *ExchangeRateRepository) CreateSingleExchangeRate (
 	baseCurrency models.Currency, 
 	targetCurrency models.Currency, 
 	rate float64, 
@@ -36,7 +36,7 @@ func (r *ExchangeRateRepository) InsertSingleExchangeRate (
 
 }
 
-func (r *ExchangeRateRepository) InsertMultipleExchangeRates (exchangeRates []models.ExchangeRate) error {
+func (r *ExchangeRateRepository) CreateMultipleExchangeRates (exchangeRates []models.ExchangeRate) error {
 
 	query := "INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at) VALUES "
 	values := []interface{}{}
