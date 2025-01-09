@@ -22,9 +22,16 @@ func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 	err := json.Unmarshal(jsonData, &data)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return nil,nil
+		return nil,err
 	}
 
+	// Retrieve the base currency
+	baseCurrency:=data["base"]
+
+	//Convert to list format 
+	var baseCurrencyList []interface{}
+	baseCurrencyList=append(baseCurrencyList, baseCurrency)
+	
 	rates, ok := data["rates"].(map[string]interface{})
 	if !ok {
 		return nil, fmt.Errorf("rates field missing or invalid")
@@ -35,10 +42,13 @@ func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 		codes = append(codes, code)
 	}
 
-	currencyMap, err := s.currencyService.GetCurrenciesByCode()
-	// if err != nil {
-	// 	return nil, fmt.Errorf("error fetching currencies: %w", err)
-	// }
+	currencyMap, err := s.currencyService.GetCurrenciesByCode(codes)
+	if err != nil {
+		return nil, fmt.Errorf("error fetching currencies: %w", err)
+	}
+
+	// Convert currencyMap items to storable exchangeRate formats.
+
 
 }
 

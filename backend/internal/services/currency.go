@@ -25,6 +25,6 @@ func (s *CurrencyService) GetAllCurrencies()([]models.Currency, error){
 	return s.CurrencyRepo.GetCurrencies()
 }
 
-func (s *CurrencyService) GetCurrenciesByCode(codes []string)([]models.Currency, error){
+func (s *CurrencyService) GetCurrenciesByCode(codes []string)(map[string]*models.Currency, error){
 	return s.CurrencyRepo.GetCurrenciesByCode(codes)
 }

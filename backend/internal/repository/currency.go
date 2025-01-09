@@ -12,7 +12,7 @@ type CurrencyRepository interface {
 	CreateSingleCurrency(currency models.Currency) error
 	CreateMultipleCurrencies(currencies []models.Currency) error
 	GetCurrencies()([]models.Currency, error)
-	GetCurrenciesByCode(codes []string)(map[string]*models.Currency, error)
+	GetCurrenciesByCode(codes []string)(map[string]*uint, error)
 }
 // Handles database operations for currency
 type currencyRepository struct {
@@ -90,7 +90,7 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 	return currencies, nil
 }
 
-func (r *currencyRepository) GetCurrenciesByCode(codes []string)(map[string]*models.Currency, error){
+func (r *currencyRepository) GetCurrenciesByCode(codes []string)(map[string]*uint, error){
 	
 	// Retrieve the rows of matched currencies
 	query:= "SELECT id, code, name FROM currencies WHERE code=ANY($1)"
@@ -117,9 +117,9 @@ func (r *currencyRepository) GetCurrenciesByCode(codes []string)(map[string]*mod
 	}
 
 	//Make the list of currencies accessible by converting to map
-	currencyMap := make(map[string]*models.Currency)
+	currencyMap := make(map[string]*uint)
 	for _,currency:=range(currencies){
-		currencyMap[currency.Code]=&currency
+		currencyMap[currency.Code]=&currency.ID
 	}
 	
 	return currencyMap, nil
