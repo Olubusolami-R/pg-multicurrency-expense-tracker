@@ -13,6 +13,7 @@ type CurrencyRepository interface {
 	CreateMultipleCurrencies(currencies []models.Currency) error
 	GetCurrencies()([]models.Currency, error)
 	GetCurrencyIDsByCode(codes []string)(map[string]*uint, error)
+	CheckCurrenciesPopulated() (bool,error)
 }
 // Handles database operations for currency
 type currencyRepository struct {
@@ -22,6 +23,16 @@ type currencyRepository struct {
 // Helper function to initialize the repository
 func NewCurrencyRepository(db *sql.DB) CurrencyRepository{
 	return &currencyRepository{DB:db}
+}
+
+func (r *currencyRepository) CheckCurrenciesPopulated() (bool,error){
+	var count int
+	query := "SELECT COUNT(*) from currencies"
+	err := r.DB.QueryRow(query).Scan(&count)
+    if err != nil {
+        return false, fmt.Errorf("error checking currencies table: %w", err)
+    }
+    return count > 0, nil
 }
 
 func (r *currencyRepository) CreateSingleCurrency(currency models.Currency) error {

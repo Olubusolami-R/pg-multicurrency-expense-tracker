@@ -18,6 +18,7 @@ type currencyHandler struct {
 func (h *currencyHandler) PopulateCurrencies() error {
 
 	//have to check if populated already so needs service and repo haewww
+	
 
 	currencies,err:=h.currencyService.LoadCurrencies()
 	if err!=nil{
