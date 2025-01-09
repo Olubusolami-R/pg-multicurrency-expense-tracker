@@ -26,17 +26,17 @@ func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 	}
 
 	// Retrieve the base currency
-	baseCurrency:=data["base"]
+	baseCurrency:=data["base"].(string)
 
-	//Convert to list format and retrieve code-ID map of base Currency
+	// Convert to list format and retrieve code-ID map of base Currency
 	var baseCurrencyList []string // Use []string directly
-	baseCurrencyList = append(baseCurrencyList, baseCurrency.(string))
+	baseCurrencyList = append(baseCurrencyList, baseCurrency)
 	baseCurrencyMap, err:=s.currencyService.GetCurrencyIDsByCode(baseCurrencyList)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching base currency: %w", err)
+		return nil, fmt.Errorf("error fetching base currency ID: %w", err)
 	}
 
-
+	// retrieve the targetCurrencyCode-rate map
 	rates, ok := data["rates"].(map[string]interface{})
 	if !ok {
 		return nil, fmt.Errorf("rates field missing or invalid")
@@ -47,14 +47,31 @@ func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 		codes = append(codes, code)
 	}
 
+	// Now focus on retrieving code-ID map for all target currencies
 	currencyMap, err := s.currencyService.GetCurrencyIDsByCode(codes)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching currencies: %w", err)
 	}
 
 	// Convert currencyMap items to storable exchangeRate formats.
+	var exchangeRates []models.ExchangeRate
+	for code, rate :=range rates {
+		var exchangeRate models.ExchangeRate
 
+		// Assert rate as float64
+		rateValue, ok := rate.(float64)
+		if !ok {
+			return nil, fmt.Errorf("rate for code %s is not a valid float64", code)
+		}
 
+		exchangeRate.BaseCurrency=*baseCurrencyMap[baseCurrency]
+		exchangeRate.TargetCurrency=*currencyMap[code]
+		exchangeRate.Rate=rateValue
+
+		exchangeRates=append(exchangeRates, exchangeRate)
+	}
+
+	return exchangeRates,nil
 }
 
 func (s *ExchangeRateService) CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error {
