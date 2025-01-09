@@ -1,6 +1,10 @@
 package apis
 
-import "github.com/Olubusolami-R/multicurrency-tracker/internal/services"
+import (
+	"fmt"
+
+	"github.com/Olubusolami-R/multicurrency-tracker/internal/services"
+)
 
 type CurrencyHandler interface{
 
@@ -11,6 +15,18 @@ type currencyHandler struct {
 }
 
 // called once
-func (h *currencyHandler) ProcessCurrencies() error {
+func (h *currencyHandler) PopulateCurrencies() error {
+	currencies,err:=h.currencyService.LoadCurrencies()
+	if err!=nil{
+		return fmt.Errorf("error loading currencies :%w", err)
+	}
+
+	err=h.currencyService.CreateMultipleCurrencies(currencies)
+	if err!=nil{
+		return fmt.Errorf("error populating currencies table:%w", err)
+	}
+
+	fmt.Println("Currencies table successfully populated! Check psql.")
+	return nil
 
 }
