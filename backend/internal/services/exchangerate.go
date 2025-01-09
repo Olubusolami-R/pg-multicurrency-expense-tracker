@@ -19,8 +19,8 @@ type exchangeRateService struct{
 	currencyService currencyService
 }
 
-func NewExchangeRateService(repo repository.ExchangeRateRepository)exchangeRateService{
-	return exchangeRateService{Repo: repo}
+func NewExchangeRateService(repo repository.ExchangeRateRepository)ExchangeRateService{
+	return &exchangeRateService{Repo: repo}
 }
 
 func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.ExchangeRate,error){

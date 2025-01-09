@@ -23,8 +23,8 @@ type currencyService struct {
 	CurrencyRepo repository.CurrencyRepository
 }
 
-func NewCurrencyService(repo repository.CurrencyRepository) currencyService {
-	return currencyService{CurrencyRepo: repo}
+func NewCurrencyService(repo repository.CurrencyRepository) CurrencyService {
+	return &currencyService{CurrencyRepo: repo}
 }
 
 func (s *currencyService) CheckCurrenciesPopulated() (bool,error) {

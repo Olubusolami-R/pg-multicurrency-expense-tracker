@@ -14,8 +14,8 @@ type expenseService struct{
 	ExpenseRepo repository.ExpenseRepository
 }
 
-func NewExpenseService(repo repository.ExpenseRepository) expenseService {
-	return expenseService{ExpenseRepo:repo}
+func NewExpenseService(repo repository.ExpenseRepository) ExpenseService {
+	return &expenseService{ExpenseRepo:repo}
 }
 
 func (s *expenseService) CreateExpense(expense models.Expense) error {

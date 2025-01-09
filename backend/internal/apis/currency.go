@@ -14,8 +14,8 @@ type currencyHandler struct {
 	currencyService services.CurrencyService
 }
 
-func NewCurrencyService(service services.CurrencyService) currencyHandler {
-	return currencyHandler{currencyService: service}
+func NewCurrencyHandler(service services.CurrencyService) CurrencyHandler {
+	return &currencyHandler{currencyService: service}
 }
 // called once
 func (h *currencyHandler) PopulateCurrencies() error {

@@ -5,7 +5,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/Olubusolami-R/multicurrency-tracker/internal/apis"
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/db"
+	"github.com/Olubusolami-R/multicurrency-tracker/internal/repository"
+	"github.com/Olubusolami-R/multicurrency-tracker/internal/services"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -32,4 +35,12 @@ func main(){
 	e.Use(middleware.CORS())
 
 	fmt.Println("Hello there!")
+
+	currencyRepo := repository.NewCurrencyRepository(database)
+
+	// Initialize service
+	currencyService := services.NewCurrencyService(currencyRepo)
+
+	// Initialize handler
+	currencyHandler := apis.NewCurrencyHandler(currencyService)
 }
