@@ -24,3 +24,7 @@ func (s *CurrencyService) CreateMultipleCurrencies(currencies []models.Currency)
 func (s *CurrencyService) GetAllCurrencies()([]models.Currency, error){
 	return s.CurrencyRepo.GetCurrencies()
 }
+
+func (s *CurrencyService) GetCurrenciesBySymbols(symbols []string)([]models.Currency, error){
+	return s.CurrencyRepo.GetCurrenciesBySymbols(symbols)
+}
