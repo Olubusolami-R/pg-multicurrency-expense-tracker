@@ -88,3 +88,32 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
 	return currencies, nil
 }
+
+func (r *currencyRepository) GetCurrenciesBySymbols(symbols []string)([]models.Currency, error){
+	
+	// Retrieve the rows of matched currencies
+	query:= "SELECT id, code, name FROM currencies WHERE code=ANY($1)"
+
+	rows,err:=r.DB.Query(query,symbols)
+	if err != nil {
+		return nil, fmt.Errorf("error querying currencies: %w", err)
+	}
+	defer rows.Close()
+
+	// Parse the rows of the matched currencies
+	var currencies []models.Currency
+	for rows.Next(){
+		var currency models.Currency
+		if err := rows.Scan(&currency.ID, &currency.Code, &currency.Name); err!=nil{
+			return nil,fmt.Errorf("failed to scan currency row")
+		}
+		currencies=append(currencies, currency)
+	}
+
+	// Check general row errors
+	if err:=rows.Err();err!=nil{
+		return nil, fmt.Errorf("error iterating rows: %w", err)
+	}
+
+	return currencies, nil
+}
