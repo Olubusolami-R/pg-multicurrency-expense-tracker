@@ -14,12 +14,23 @@ type currencyHandler struct {
 	currencyService services.CurrencyService
 }
 
+func NewCurrencyService(service services.CurrencyService) currencyHandler {
+	return currencyHandler{currencyService: service}
+}
 // called once
 func (h *currencyHandler) PopulateCurrencies() error {
-
-	//have to check if populated already so needs service and repo haewww
 	
+	alreadyPopulated, err := h.currencyService.CheckCurrenciesPopulated() // e.g., count rows in DB
+    if err != nil {
+        return fmt.Errorf("failed to check currencies: %w", err)
+    }
 
+    if alreadyPopulated {
+        fmt.Println("Currencies are already populated, skipping.")
+        return nil
+    }
+	
+	//If not populated, then populate
 	currencies,err:=h.currencyService.LoadCurrencies()
 	if err!=nil{
 		return fmt.Errorf("error loading currencies :%w", err)
