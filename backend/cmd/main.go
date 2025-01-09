@@ -7,6 +7,8 @@ import (
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/db"
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func main(){
@@ -24,6 +26,10 @@ func main(){
 	}
 	defer database.Close()
 
+	// Set up echo
+	e := echo.New()
+
+	e.Use(middleware.CORS())
 
 	fmt.Println("Hello there!")
 }

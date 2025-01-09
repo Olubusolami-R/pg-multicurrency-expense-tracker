@@ -7,7 +7,7 @@ import (
 )
 
 type CurrencyHandler interface{
-
+	PopulateCurrencies() error
 }
 
 type currencyHandler struct {
@@ -16,6 +16,9 @@ type currencyHandler struct {
 
 // called once
 func (h *currencyHandler) PopulateCurrencies() error {
+
+	//have to check if populated already so needs service and repo haewww
+
 	currencies,err:=h.currencyService.LoadCurrencies()
 	if err!=nil{
 		return fmt.Errorf("error loading currencies :%w", err)
@@ -28,5 +31,9 @@ func (h *currencyHandler) PopulateCurrencies() error {
 
 	fmt.Println("Currencies table successfully populated! Check psql.")
 	return nil
-
 }
+
+
+
+
+
