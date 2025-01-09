@@ -8,16 +8,22 @@ import (
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/repository"
 )
 
-type ExchangeRateService struct{
+type ExchangeRateService interface{
+	ProcessAPIOutput(jsonData []byte)([]models.ExchangeRate,error)
+	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
+	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
+}
+
+type exchangeRateService struct{
 	Repo repository.ExchangeRateRepository
-	currencyService CurrencyService
+	currencyService currencyService
 }
 
-func NewExchangeRateService(repo repository.ExchangeRateRepository)ExchangeRateService{
-	return ExchangeRateService{Repo: repo}
+func NewExchangeRateService(repo repository.ExchangeRateRepository)exchangeRateService{
+	return exchangeRateService{Repo: repo}
 }
 
-func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.ExchangeRate,error){
+func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.ExchangeRate,error){
 	var data map[string]interface{}
 	err := json.Unmarshal(jsonData, &data)
 	if err != nil {
@@ -74,10 +80,10 @@ func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 	return exchangeRates,nil
 }
 
-func (s *ExchangeRateService) CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error {
+func (s *exchangeRateService) CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error {
 	return s.Repo.CreateSingleExchangeRate(exchangeRate)
 }
 
-func (s *ExchangeRateService) CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error {
+func (s *exchangeRateService) CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error {
 	return s.Repo.CreateMultipleExchangeRates(exchangeRates)
 }

@@ -10,7 +10,15 @@ import (
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/repository"
 )
 
-type CurrencyService struct {
+type CurrencyService interface{
+	LoadCurrencies() ([]models.Currency, error)
+	CreateSingleCurrency(currency models.Currency) error
+	CreateMultipleCurrencies(currencies []models.Currency) error
+	GetAllCurrencies()([]models.Currency, error)
+	GetCurrencyIDsByCode(codes []string)(map[string]*uint, error)
+}
+
+type currencyService struct {
 	CurrencyRepo repository.CurrencyRepository
 }
 
@@ -43,22 +51,22 @@ func LoadCurrencies() ([]models.Currency, error) {
     return currencies, nil
 }
 
-func NewCurrencyService(repo repository.CurrencyRepository) CurrencyService {
-	return CurrencyService{CurrencyRepo: repo}
+func NewCurrencyService(repo repository.CurrencyRepository) currencyService {
+	return currencyService{CurrencyRepo: repo}
 }
 
-func (s *CurrencyService) CreateSingleCurrency(currency models.Currency) error {
+func (s *currencyService) CreateSingleCurrency(currency models.Currency) error {
 	return s.CurrencyRepo.CreateSingleCurrency(currency)
 }
 
-func (s *CurrencyService) CreateMultipleCurrencies(currencies []models.Currency) error {
+func (s *currencyService) CreateMultipleCurrencies(currencies []models.Currency) error {
 	return s.CurrencyRepo.CreateMultipleCurrencies(currencies)
 }
 
-func (s *CurrencyService) GetAllCurrencies()([]models.Currency, error){
+func (s *currencyService) GetAllCurrencies()([]models.Currency, error){
 	return s.CurrencyRepo.GetCurrencies()
 }
 
-func (s *CurrencyService) GetCurrencyIDsByCode(codes []string)(map[string]*uint, error){
+func (s *currencyService) GetCurrencyIDsByCode(codes []string)(map[string]*uint, error){
 	return s.CurrencyRepo.GetCurrencyIDsByCode(codes)
 }
