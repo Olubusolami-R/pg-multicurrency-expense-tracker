@@ -12,6 +12,7 @@ type CurrencyRepository interface {
 	CreateSingleCurrency(currency models.Currency) error
 	CreateMultipleCurrencies(currencies []models.Currency) error
 	GetCurrencies()([]models.Currency, error)
+	GetCurrenciesByCode(codes []string)([]models.Currency, error)
 }
 // Handles database operations for currency
 type currencyRepository struct {
@@ -89,12 +90,12 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 	return currencies, nil
 }
 
-func (r *currencyRepository) GetCurrenciesBySymbols(symbols []string)([]models.Currency, error){
+func (r *currencyRepository) GetCurrenciesByCode(codes []string)([]models.Currency, error){
 	
 	// Retrieve the rows of matched currencies
 	query:= "SELECT id, code, name FROM currencies WHERE code=ANY($1)"
 
-	rows,err:=r.DB.Query(query,symbols)
+	rows,err:=r.DB.Query(query,codes)
 	if err != nil {
 		return nil, fmt.Errorf("error querying currencies: %w", err)
 	}
