@@ -10,6 +10,7 @@ import (
 
 type ExchangeRateService struct{
 	Repo repository.ExchangeRateRepository
+	currencyService CurrencyService
 }
 
 func NewExchangeRateService(repo repository.ExchangeRateRepository)ExchangeRateService{
@@ -29,22 +30,16 @@ func (s *ExchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 		return nil, fmt.Errorf("rates field missing or invalid")
 	}
 
-	var symbols []string
-	for symbol := range rates {
-		symbols = append(symbols, symbol)
+	var codes []string
+	for code := range rates {
+		codes = append(codes, code)
 	}
 
-	return nil,nil
-	// currencyMap, err := s.CurrencyService.GetCurrenciesBySymbols(symbols)
+	currencyMap, err := s.currencyService.GetCurrenciesByCode()
 	// if err != nil {
 	// 	return nil, fmt.Errorf("error fetching currencies: %w", err)
 	// }
 
-
-
-
-
-	
 }
 
 func (s *ExchangeRateService) CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error {
