@@ -121,3 +121,9 @@ func (s *exchangeRateService) CreateMultipleExchangeRates(exchangeRates []models
 func (s *exchangeRateService) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
 	return s.Repo.UpsertExchangeRates(exchangeRates)
 }
+
+func (s *exchangeRateService) GetExchangeRate(){}
+
+//Todo:
+// I'll accept the codes as strings then call get currenciesbyCode where i'll have a code-id map
+//Then create currencies model and pass to GetExchangeRate

@@ -12,7 +12,7 @@ import (
 type ExchangeRateRepository interface{
 	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
-	GetExchangeRates()([]models.ExchangeRate, error)
+	GetAllExchangeRates()([]models.ExchangeRate, error)
 	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
 	GetExchangeRate(base models.Currency,target models.Currency) (float64,error)
 }
@@ -61,7 +61,7 @@ func (r *exchangeRateRepository) CreateMultipleExchangeRates(exchangeRates []mod
 	return nil
 }
 
-func (r *exchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error){
+func (r *exchangeRateRepository) GetAllExchangeRates()([]models.ExchangeRate, error){
 
 	query:="SELECT base_currency, target_currency, rate, updated_at FROM exchange_rates"
 
