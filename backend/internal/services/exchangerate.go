@@ -12,10 +12,11 @@ import (
 )
 
 type ExchangeRateService interface{
-	ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error)
 	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 	CallExchangeRateAPI() ([]byte,error)
+	ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error)
+	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
 }
 
 type exchangeRateService struct{
