@@ -1,1 +1,0 @@
-ALTER TABLE exchange_rates RENAME COLUMN updated_at TO created_at;

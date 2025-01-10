@@ -29,7 +29,7 @@ func (r *exchangeRateRepository) CreateSingleExchangeRate(exchangeRate models.Ex
 
 	query := "INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at) VALUES ($1, $2, $3, $4)"
 	
-	_,err := r.DB.Exec(query, exchangeRate.BaseCurrency, exchangeRate.TargetCurrency, exchangeRate.Rate, exchangeRate.CreatedAt)
+	_,err := r.DB.Exec(query, exchangeRate.BaseCurrency, exchangeRate.TargetCurrency, exchangeRate.Rate, exchangeRate.UpdatedAt)
 	if err != nil {
 		return err
 	}
@@ -46,7 +46,7 @@ func (r *exchangeRateRepository) CreateMultipleExchangeRates(exchangeRates []mod
 
 	for i, exchangeRate := range exchangeRates{
 		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d)", i*2+1, i*2+2, i*2+3, i*2+4))
-		values = append(values, exchangeRate.BaseCurrency, exchangeRate.TargetCurrency, exchangeRate.Rate, exchangeRate.CreatedAt)
+		values = append(values, exchangeRate.BaseCurrency, exchangeRate.TargetCurrency, exchangeRate.Rate, exchangeRate.UpdatedAt)
 	}
 
 	query += strings.Join(placeholders, ",")
@@ -76,7 +76,7 @@ func (r *exchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error
 
 		var exchangeRate models.ExchangeRate
 
-		if err := rows.Scan(&exchangeRate.BaseCurrency, &exchangeRate.TargetCurrency, &exchangeRate.Rate, &exchangeRate.CreatedAt); err != nil {
+		if err := rows.Scan(&exchangeRate.BaseCurrency, &exchangeRate.TargetCurrency, &exchangeRate.Rate, &exchangeRate.UpdatedAt); err != nil {
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}
 
@@ -99,7 +99,7 @@ func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*m
 
 	// Prepare SQL for batch insert/update
 	stmt, err := tx.Prepare(`
-		INSERT INTO exchange_rates (base_currency, target_currency, rate, created_at)
+		INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at)
 		VALUES ($1, $2, $3, NOW())
 		ON CONFLICT (base_currency, target_currency) 
 		DO UPDATE SET 

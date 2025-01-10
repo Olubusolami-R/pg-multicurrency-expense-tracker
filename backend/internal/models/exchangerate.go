@@ -7,5 +7,5 @@ type ExchangeRate struct {
 	BaseCurrency   uint      `json:"base_currency"`
 	TargetCurrency uint      `json:"target_currency"`
 	Rate           float64   `json:"rate"`
-	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
 }
