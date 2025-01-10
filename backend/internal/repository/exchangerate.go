@@ -14,6 +14,7 @@ type ExchangeRateRepository interface{
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 	GetExchangeRates()([]models.ExchangeRate, error)
 	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
+	GetExchangeRate(base models.Currency,target models.Currency) (float64,error)
 }
 
 type exchangeRateRepository struct {
@@ -131,3 +132,26 @@ func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*m
 
 }
 
+// Implement get single exchange rate
+func (r *exchangeRateRepository) GetExchangeRate(base models.Currency,target models.Currency) (float64,error) {
+	query:=`
+		SELECT rate 
+		FROM exchange_rates 
+		WHERE base_currency = $1 AND target_currency = $2
+		`
+	
+	rows,err:=r.DB.Query(query,base.ID,target.ID)
+	if err != nil {
+		return 0, fmt.Errorf("failed to fetch exchange rate %s - %s: %w",base.Code,target.Code, err)
+	}
+	defer rows.Close()
+
+	var exchangeRate float64
+	for rows.Next(){
+		if err := rows.Scan(&exchangeRate); err != nil {
+			return 0, fmt.Errorf("failed to scan exchange rate row: %w", err)
+		}
+	}
+
+	return exchangeRate,nil
+}

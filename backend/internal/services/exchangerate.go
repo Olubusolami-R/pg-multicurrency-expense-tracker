@@ -113,6 +113,7 @@ func (s *exchangeRateService) CreateSingleExchangeRate(exchangeRate models.Excha
 	return s.Repo.CreateSingleExchangeRate(exchangeRate)
 }
 
+// Might remove
 func (s *exchangeRateService) CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error {
 	return s.Repo.CreateMultipleExchangeRates(exchangeRates)
 }
