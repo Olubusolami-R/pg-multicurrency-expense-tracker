@@ -3,6 +3,9 @@ package services
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/models"
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/repository"
@@ -12,6 +15,7 @@ type ExchangeRateService interface{
 	ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error)
 	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
+	CallExchangeRateAPI() ([]byte,error)
 }
 
 type exchangeRateService struct{
@@ -21,6 +25,30 @@ type exchangeRateService struct{
 
 func NewExchangeRateService(repo repository.ExchangeRateRepository)ExchangeRateService{
 	return &exchangeRateService{Repo: repo}
+}
+
+func (s *exchangeRateService) CallExchangeRateAPI() ([]byte,error) {
+
+	accessKey := os.Getenv("EXCHANGE_API_KEY")
+	if accessKey == "" {
+		fmt.Println("Error: EXCHANGE_API_KEY environment variable is not set")
+		return nil,nil
+	}
+	
+	apiURL:=fmt.Sprintf("http://api.exchangeratesapi.io/v1/latest?access_key=%s",os.Getenv("EXCHANGE_API_KEY"))
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		return nil,fmt.Errorf("failed to fetch exchange rates: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read response body: %v", err)
+	}
+
+	return body, nil
+	
 }
 
 func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error){
