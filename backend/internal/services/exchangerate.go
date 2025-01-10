@@ -9,7 +9,7 @@ import (
 )
 
 type ExchangeRateService interface{
-	ProcessAPIOutput(jsonData []byte)([]models.ExchangeRate,error)
+	ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error)
 	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 }
@@ -23,7 +23,7 @@ func NewExchangeRateService(repo repository.ExchangeRateRepository)ExchangeRateS
 	return &exchangeRateService{Repo: repo}
 }
 
-func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.ExchangeRate,error){
+func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error){
 	var data map[string]interface{}
 	err := json.Unmarshal(jsonData, &data)
 	if err != nil {
@@ -60,7 +60,7 @@ func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 	}
 
 	// Convert currencyMap items to storable exchangeRate formats.
-	var exchangeRates []models.ExchangeRate
+	exchangeRates:= make(map[string]*models.ExchangeRate)
 	for code, rate :=range rates {
 		var exchangeRate models.ExchangeRate
 
@@ -74,7 +74,7 @@ func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)([]models.Exchang
 		exchangeRate.TargetCurrency=*currencyMap[code]
 		exchangeRate.Rate=rateValue
 
-		exchangeRates=append(exchangeRates, exchangeRate)
+		exchangeRates[code]=&exchangeRate
 	}
 
 	return exchangeRates,nil
@@ -87,3 +87,7 @@ func (s *exchangeRateService) CreateSingleExchangeRate(exchangeRate models.Excha
 func (s *exchangeRateService) CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error {
 	return s.Repo.CreateMultipleExchangeRates(exchangeRates)
 }
+
+// func (r *exchangeRateService) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
+
+// }

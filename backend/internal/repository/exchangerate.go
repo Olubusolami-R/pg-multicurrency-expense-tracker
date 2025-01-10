@@ -13,6 +13,7 @@ type ExchangeRateRepository interface{
 	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 	GetExchangeRates()([]models.ExchangeRate, error)
+	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
 }
 
 type exchangeRateRepository struct {
@@ -129,3 +130,4 @@ func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*m
 	return nil
 
 }
+
