@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/models"
@@ -87,4 +88,44 @@ func (r *exchangeRateRepository) GetExchangeRates()([]models.ExchangeRate, error
 	}
 
 	return exchangeRates, nil
+}
+
+func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
+	// Begin transaction
+	tx, err := r.DB.Begin()
+	if err != nil {
+		return fmt.Errorf("failed to begin transaction: %v", err)
+	}
+
+	// Prepare SQL for batch insert/update
+	stmt, err := tx.Prepare(`
+		INSERT INTO exchange_rates (base_currency, target_currency, rate, created_at)
+		VALUES ($1, $2, $3, NOW())
+		ON CONFLICT (base_currency, target_currency) 
+		DO UPDATE SET 
+			rate = EXCLUDED.rate,
+			updated_at = NOW();
+	`)
+	if err != nil {
+		return fmt.Errorf("error preparing statement: %w", err)
+	}
+	defer stmt.Close()
+
+	for target, rate := range exchangeRates {
+		_, err := stmt.Exec(rate.BaseCurrency, rate.TargetCurrency, rate.Rate)
+		if err != nil {
+			return fmt.Errorf("failed to insert/update exchange rate for %s: %v", target, err)
+		}
+	}
+
+	// Commit the transaction
+	err = tx.Commit()
+	if err != nil {
+		tx.Rollback()
+		return fmt.Errorf("failed to commit transaction: %v", err)
+	}
+
+	log.Println("Exchange rates updated successfully!")
+	return nil
+
 }
