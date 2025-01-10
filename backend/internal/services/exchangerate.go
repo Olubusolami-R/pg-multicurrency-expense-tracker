@@ -48,7 +48,7 @@ func (s *exchangeRateService) CallExchangeRateAPI() ([]byte,error) {
 	}
 
 	return body, nil
-	
+
 }
 
 func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error){
@@ -116,6 +116,6 @@ func (s *exchangeRateService) CreateMultipleExchangeRates(exchangeRates []models
 	return s.Repo.CreateMultipleExchangeRates(exchangeRates)
 }
 
-// func (r *exchangeRateService) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
-
-// }
+func (r *exchangeRateService) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
+	return r.Repo.UpsertExchangeRates(exchangeRates)
+}
