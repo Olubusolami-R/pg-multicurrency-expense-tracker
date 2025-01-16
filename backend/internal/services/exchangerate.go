@@ -122,19 +122,16 @@ func (s *exchangeRateService) UpsertExchangeRates(exchangeRates map[string]*mode
 	return s.Repo.UpsertExchangeRates(exchangeRates)
 }
 
-func (s *exchangeRateService) GetExchangeRate(base string, target string){
+func (s *exchangeRateService) GetExchangeRate(base string, target string)(float64, error){
 	var currencies []string
 	currencies = append(currencies, base)
 	currencies = append(currencies, target)
 
 	currencyMap,err:=s.currencyService.GetCurrencyIDsByCode(currencies)
 	if err!=nil{
-		fmt.Errorf("unable to retrieve the IDs of the base and target currency")
+		return -1,fmt.Errorf("unable to retrieve the IDs of the base and target currency: %w", err)
 	}
 
 	return s.Repo.GetExchangeRate(currencyMap, base, target)
 }
 
-//Todo:
-// I'll accept the codes as strings then call get currenciesbyCode where i'll have a code-id map
-//Then create currencies model and pass to GetExchangeRate
