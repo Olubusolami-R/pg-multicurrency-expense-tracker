@@ -12,7 +12,7 @@ type CurrencyRepository interface {
 	CreateSingleCurrency(currency models.Currency) error
 	CreateMultipleCurrencies(currencies []models.Currency) error
 	GetCurrencies()([]models.Currency, error)
-	GetCurrencyIDsByCode(codes []string)(map[string]*uint, error)
+	GetCurrencyIDsByCode(codes []string)(map[string]uint, error)
 	CheckCurrenciesPopulated() (bool,error)
 }
 // Handles database operations for currency
@@ -101,7 +101,7 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 	return currencies, nil
 }
 
-func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]*uint, error){
+func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uint, error){
 	
 	// Retrieve the rows of matched currencies
 	query:= "SELECT id, code, name FROM currencies WHERE code=ANY($1)"
@@ -128,9 +128,9 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]*ui
 	}
 
 	//Make the list of currencies accessible by converting to map
-	currencyMap := make(map[string]*uint)
+	currencyMap := make(map[string]uint)
 	for _,currency:=range(currencies){
-		currencyMap[currency.Code]=&currency.ID
+		currencyMap[currency.Code]=currency.ID
 	}
 	
 	return currencyMap, nil
