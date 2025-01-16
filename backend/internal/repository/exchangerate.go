@@ -14,7 +14,7 @@ type ExchangeRateRepository interface{
 	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 	GetAllExchangeRates()([]models.ExchangeRate, error)
 	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
-	GetExchangeRate(currencyMap map[string]*uint, base string, target string) (float64,error)
+	GetExchangeRate(currencyMap map[string]uint, base string, target string) (float64,error)
 }
 
 type exchangeRateRepository struct {
@@ -133,7 +133,7 @@ func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*m
 }
 
 // Implement get single exchange rate
-func (r *exchangeRateRepository) GetExchangeRate(currencyMap map[string]*uint, base string, target string) (float64,error) {
+func (r *exchangeRateRepository) GetExchangeRate(currencyMap map[string]uint, base string, target string) (float64,error) {
 	query:=`
 		SELECT rate 
 		FROM exchange_rates 

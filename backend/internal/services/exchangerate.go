@@ -100,8 +100,8 @@ func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*mode
 			return nil, fmt.Errorf("rate for code %s is not a valid float64", code)
 		}
 
-		exchangeRate.BaseCurrency=*baseCurrencyMap[baseCurrency]
-		exchangeRate.TargetCurrency=*currencyMap[code]
+		exchangeRate.BaseCurrency=baseCurrencyMap[baseCurrency]
+		exchangeRate.TargetCurrency=currencyMap[code]
 		exchangeRate.Rate=rateValue
 
 		exchangeRates[code]=&exchangeRate

@@ -15,7 +15,7 @@ type CurrencyService interface{
 	CreateSingleCurrency(currency models.Currency) error
 	CreateMultipleCurrencies(currencies []models.Currency) error
 	GetAllCurrencies()([]models.Currency, error)
-	GetCurrencyIDsByCode(codes []string)(map[string]*uint, error)
+	GetCurrencyIDsByCode(codes []string)(map[string]uint, error)
 	CheckCurrenciesPopulated() (bool,error)
 }
 
