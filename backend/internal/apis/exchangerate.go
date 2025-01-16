@@ -2,12 +2,14 @@ package apis
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/services"
+	"github.com/labstack/echo/v4"
 )
 
 type ExchangeRateHandler interface{
-	UpdateRates()error
+	UpdateRates(c echo.Context)error
 }
 
 type exchangeRateHandler struct {
@@ -18,23 +20,23 @@ func NewExchangeRateHandler(service services.ExchangeRateService) ExchangeRateHa
 	return &exchangeRateHandler{exchangeRateService: service}
 }
 
-func (h *exchangeRateHandler) UpdateRates()error{
+func (h *exchangeRateHandler) UpdateRates(c echo.Context)error{
 	ratesJSON,err:=h.exchangeRateService.CallExchangeRateAPI()
 	if err!=nil{
-		return fmt.Errorf("error fetching latest exchange rates from API")
+		return c.JSON(http.StatusInternalServerError, fmt.Errorf("error fetching latest exchange rates from API"))
 	}
 
 	ratesMap,err:=h.exchangeRateService.ProcessAPIOutput(ratesJSON)
 	if err!=nil{
-		return fmt.Errorf("error processing exchange rate API output into map")
+		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error processing exchange rate API output into map"))
 	}
 
 	err=h.exchangeRateService.UpsertExchangeRates(ratesMap)
 	if err!=nil{
-		return fmt.Errorf("error upserting exchange rates in database")
+		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error upserting exchange rates in database"))
 	}
 
 	fmt.Println("Rates updated successfully! Check Postgres")
 
-	return nil
+	return c.JSON(http.StatusOK, "Rates updated successfully! Check Postgres.")
 }
