@@ -37,13 +37,15 @@ func main(){
 	fmt.Println("Hello there!")
 
 	currencyRepo := repository.NewCurrencyRepository(database)
+	rateRepo:= repository.NewExchangeRateRepository(database)
 
 	// Initialize service
 	currencyService := services.NewCurrencyService(currencyRepo)
+	rateService:=services.NewExchangeRateService(rateRepo)
 
 	// Initialize handler
 	currencyHandler := apis.NewCurrencyHandler(currencyService)
-
+	rateHandler:=apis.NewExchangeRateHandler(rateService)
 	// Optionally check and populate currencies
 	err = currencyHandler.PopulateCurrencies()
 	if err != nil {
@@ -52,4 +54,6 @@ func main(){
 
 	// Start the server
 	e.Logger.Fatal(e.Start(":8080"))
+
+	e.
 }

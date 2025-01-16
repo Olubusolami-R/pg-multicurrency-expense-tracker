@@ -7,15 +7,15 @@ import (
 )
 
 type ExchangeRateHandler interface{
-	PopulateCurrencies() error
+	UpdateRates()error
 }
 
 type exchangeRateHandler struct {
 	exchangeRateService services.ExchangeRateService
 }
 
-func NewExchangeRateHandler(service services.CurrencyService) CurrencyHandler {
-	return &currencyHandler{currencyService: service}
+func NewExchangeRateHandler(service services.ExchangeRateService) ExchangeRateHandler {
+	return &exchangeRateHandler{exchangeRateService: service}
 }
 
 func (h *exchangeRateHandler) UpdateRates()error{
