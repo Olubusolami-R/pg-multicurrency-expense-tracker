@@ -46,14 +46,17 @@ func main(){
 	// Initialize handler
 	currencyHandler := apis.NewCurrencyHandler(currencyService)
 	rateHandler:=apis.NewExchangeRateHandler(rateService)
+	
 	// Optionally check and populate currencies
 	err = currencyHandler.PopulateCurrencies()
 	if err != nil {
 		log.Fatalf("Failed to populate currencies: %v", err)
 	}
 
+	e.POST("/update-rates", rateHandler.UpdateRates)
+
 	// Start the server
 	e.Logger.Fatal(e.Start(":8080"))
 
-	e.
+	
 }
