@@ -22,11 +22,13 @@ type ExchangeRateService interface{
 
 type exchangeRateService struct{
 	Repo repository.ExchangeRateRepository
-	currencyService currencyService
+	currencyService CurrencyService
 }
 
-func NewExchangeRateService(repo repository.ExchangeRateRepository)ExchangeRateService{
-	return &exchangeRateService{Repo: repo}
+func NewExchangeRateService(repo repository.ExchangeRateRepository, currencyService CurrencyService)ExchangeRateService{
+	return &exchangeRateService{
+		Repo: repo,
+		currencyService: currencyService}
 }
 
 func (s *exchangeRateService) CallExchangeRateAPI() ([]byte,error) {
@@ -75,7 +77,7 @@ func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*mode
 	if len(baseCurrencyList) == 0 {
 		return nil, fmt.Errorf("no baseCurrency provided")
 	}
-
+	
 	baseCurrencyMap, err:=s.currencyService.GetCurrencyIDsByCode(baseCurrencyList)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching base currency ID: %w", err)

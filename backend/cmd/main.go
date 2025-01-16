@@ -41,7 +41,7 @@ func main(){
 
 	// Initialize service
 	currencyService := services.NewCurrencyService(currencyRepo)
-	rateService:=services.NewExchangeRateService(rateRepo)
+	rateService:=services.NewExchangeRateService(rateRepo,currencyService)
 
 	// Initialize handler
 	currencyHandler := apis.NewCurrencyHandler(currencyService)

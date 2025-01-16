@@ -28,11 +28,17 @@ func (h *exchangeRateHandler) UpdateRates(c echo.Context)error{
 
 	ratesMap,err:=h.exchangeRateService.ProcessAPIOutput(ratesJSON)
 	if err!=nil{
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error processing exchange rate API output into map"))
 	}
 
+	fmt.Println("after ratesMap")
+	fmt.Println(len(ratesMap))
+
+	//New point of error: there is no unique or exclusion constraint matching the ON CONFLICT specification for UGX
 	err=h.exchangeRateService.UpsertExchangeRates(ratesMap)
 	if err!=nil{
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error upserting exchange rates in database"))
 	}
 

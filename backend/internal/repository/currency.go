@@ -114,7 +114,7 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 	}
 	defer rows.Close()
 	
-	fmt.Println(rows)
+	// fmt.Println(rows)
 	fmt.Println("inside GetCurrency repo step 5: attempted to print rows")
 
 	// Parse the rows of the matched currencies and get it into a list of currencies (objects)
@@ -126,7 +126,7 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 		}
 		currencies=append(currencies, currency)
 	}
-	fmt.Println(currencies)
+	fmt.Println(len(currencies))
 	fmt.Println("inside GetCurrency repo method step 6: attempted to currencies")
 
 	// Check general row errors
@@ -139,6 +139,6 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 	for _,currency:=range(currencies){
 		currencyMap[currency.Code]=currency.ID
 	}
-	
+	fmt.Println(len(currencyMap))
 	return currencyMap, nil
 }
