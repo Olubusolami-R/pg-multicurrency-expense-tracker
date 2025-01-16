@@ -17,6 +17,7 @@ type ExchangeRateService interface{
 	CallExchangeRateAPI() ([]byte,error)
 	ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error)
 	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
+	GetExchangeRate(base string, target string)(float64, error)
 }
 
 type exchangeRateService struct{
