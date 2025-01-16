@@ -61,12 +61,21 @@ func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*mode
 		return nil,err
 	}
 
+	fmt.Println("Inside process api step 1")
+	fmt.Println(data)
 	// Retrieve the base currency
 	baseCurrency:=data["base"].(string)
 
 	// Convert to list format and retrieve code-ID map of base Currency
 	var baseCurrencyList []string // Use []string directly
 	baseCurrencyList = append(baseCurrencyList, baseCurrency)
+	fmt.Println("Inside process api step 2")
+	fmt.Println("base currency list: ", baseCurrencyList)
+
+	if len(baseCurrencyList) == 0 {
+		return nil, fmt.Errorf("no baseCurrency provided")
+	}
+
 	baseCurrencyMap, err:=s.currencyService.GetCurrencyIDsByCode(baseCurrencyList)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching base currency ID: %w", err)

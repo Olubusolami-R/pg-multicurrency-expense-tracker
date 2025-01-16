@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	models "github.com/Olubusolami-R/multicurrency-tracker/internal/models"
+	"github.com/lib/pq"
 )
 
 type CurrencyRepository interface {
@@ -106,11 +107,15 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 	// Retrieve the rows of matched currencies
 	query:= "SELECT id, code, name FROM currencies WHERE code=ANY($1)"
 
-	rows,err:=r.DB.Query(query,codes)
+	fmt.Println("inside GetCurrency repo step 4")
+	rows,err:=r.DB.Query(query,pq.Array(&codes))
 	if err != nil {
 		return nil, fmt.Errorf("error querying currencies: %w", err)
 	}
 	defer rows.Close()
+	
+	fmt.Println(rows)
+	fmt.Println("inside GetCurrency repo step 5: attempted to print rows")
 
 	// Parse the rows of the matched currencies and get it into a list of currencies (objects)
 	var currencies []models.Currency
@@ -121,6 +126,8 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 		}
 		currencies=append(currencies, currency)
 	}
+	fmt.Println(currencies)
+	fmt.Println("inside GetCurrency repo method step 6: attempted to currencies")
 
 	// Check general row errors
 	if err:=rows.Err();err!=nil{

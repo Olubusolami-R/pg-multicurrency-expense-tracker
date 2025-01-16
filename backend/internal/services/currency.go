@@ -69,9 +69,22 @@ func (s *currencyService) CreateMultipleCurrencies(currencies []models.Currency)
 }
 
 func (s *currencyService) GetAllCurrencies()([]models.Currency, error){
+	fmt.Printf("currencyService: %+v\n", s)
+	if s.CurrencyRepo == nil {
+		fmt.Println("currency repository is not initialized")
+		return nil, fmt.Errorf("currency repository is not initialized")
+	}
 	return s.CurrencyRepo.GetCurrencies()
 }
 
+//Problem location - why is currencyRepo returning nil???
 func (s *currencyService) GetCurrencyIDsByCode(codes []string)(map[string]uint, error){
+	fmt.Println("inside GetCurrency service step 3")
+	fmt.Printf("currencyService: %+v\n", s)
+	fmt.Println("This is codes:",codes)
+	if s.CurrencyRepo == nil {
+		fmt.Println("currency repository is not initialized")
+		return nil, fmt.Errorf("currency repository is not initialized")
+	}
 	return s.CurrencyRepo.GetCurrencyIDsByCode(codes)
 }

@@ -54,7 +54,7 @@ func main(){
 	}
 
 	e.POST("/update-rates", rateHandler.UpdateRates)
-
+	e.GET("/fetch-currencies", currencyHandler.GetCurrencies)
 	// Start the server
 	e.Logger.Fatal(e.Start(":8080"))
 

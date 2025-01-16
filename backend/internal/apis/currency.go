@@ -2,12 +2,15 @@ package apis
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/services"
+	"github.com/labstack/echo/v4"
 )
 
 type CurrencyHandler interface{
 	PopulateCurrencies() error
+	GetCurrencies(c echo.Context)error
 }
 
 type currencyHandler struct {
@@ -46,6 +49,11 @@ func (h *currencyHandler) PopulateCurrencies() error {
 }
 
 
-
-
-
+func (h *currencyHandler) GetCurrencies(c echo.Context)error{
+	currencies,err:= h.currencyService.GetAllCurrencies()
+	if err!=nil{
+		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error fetching all currencies :%w", err))
+	}
+	fmt.Println(currencies)
+	return c.JSON(http.StatusOK, "Currencies fetched, Check terminal.")
+}
