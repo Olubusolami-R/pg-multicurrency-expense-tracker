@@ -28,10 +28,9 @@ func (r *expenseRepository) CreateExpense(expense *models.Expense) error {
 	
 	_,err := r.DB.Exec(query, expense.Description, expense.Amount, expense.Currency, expense.CreatedAt)
 	if err != nil {
-		fmt.Println("debug 9: Here's the error: %w",err)
 		return err
 	}
-	fmt.Println("Debug successful; Expense created.")
+	fmt.Println("Expense created.")
 	return nil
 }
 
