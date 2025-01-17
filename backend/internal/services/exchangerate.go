@@ -137,5 +137,17 @@ func (s *exchangeRateService) GetExchangeRate(base string, target string)(float6
 }
 
 func (s *exchangeRateService) GetAllExchangeRates()([]models.ExchangeRate, error){
-	return s.Repo.GetAllExchangeRates()
+	rates,err:=s.Repo.GetAllExchangeRates()
+	if err!=nil{
+		return nil,fmt.Errorf("unable to retrieve all rates: %w", err)
+	}
+	
+	var processedRates []interface{}
+
+	for _,rateObject := range rates{
+		processedRate:=make(map[string]interface{})
+
+		processedRate["baseCurrency"]=s.currencyService.
+	}
+	
 }

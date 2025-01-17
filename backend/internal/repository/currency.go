@@ -133,3 +133,23 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 
 	return currencyMap, nil
 }
+
+func (r *currencyRepository) GetCurrencyCodeByID(id uint)(string,error){
+	query:= "SELECT code FROM currencies WHERE id=$1"
+	rows,err:=r.DB.Query(query,id)
+	if err != nil {
+		return "", fmt.Errorf("error getting currency code: %w", err)
+	}
+	defer rows.Close()
+
+	var code string
+
+	for rows.Next(){
+		if err := rows.Scan(&code); err!=nil{
+			return "",fmt.Errorf("failed to scan currency code")
+		}
+	}
+
+	return code,nil
+
+}
