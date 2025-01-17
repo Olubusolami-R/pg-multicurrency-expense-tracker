@@ -36,7 +36,7 @@ func (r *expenseRepository) CreateExpense(expense *models.Expense) error {
 
 func (r *expenseRepository) GetExpenses()([]models.Expense, error){
 
-	query:="SELECT description, amount, currency, createdAt FROM expenses"
+	query:="SELECT description, amount, currency, created_at FROM expenses"
 
 	rows,err:=r.DB.Query(query)
 	if err != nil {
