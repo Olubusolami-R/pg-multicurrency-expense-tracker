@@ -16,6 +16,7 @@ type CurrencyRepository interface {
 	GetCurrencyIDsByCode(codes []string)(map[string]uint, error)
 	CheckCurrenciesPopulated() (bool,error)
 }
+
 // Handles database operations for currency
 type currencyRepository struct {
 	DB *sql.DB
@@ -61,7 +62,7 @@ func (r *currencyRepository) CreateMultipleCurrencies(currencies []models.Curren
 
 	query += strings.Join(placeholders, ",")
 
-	// Execute the query
+
 	_, err := r.DB.Exec(query, values...)
 	if err != nil {
 		return err
@@ -71,7 +72,6 @@ func (r *currencyRepository) CreateMultipleCurrencies(currencies []models.Curren
 
 func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
-	// Fetch all currencies
 	query:="SELECT code, name FROM currencies"
 
 	
@@ -83,7 +83,6 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
 	var currencies []models.Currency
 
-	//Iterating through rows
 	for rows.Next() {
 
 		var currency models.Currency
@@ -104,18 +103,13 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
 func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uint, error){
 	
-	// Retrieve the rows of matched currencies
 	query:= "SELECT id, code, name FROM currencies WHERE code=ANY($1)"
 
-	fmt.Println("inside GetCurrency repo step 4")
 	rows,err:=r.DB.Query(query,pq.Array(&codes))
 	if err != nil {
 		return nil, fmt.Errorf("error querying currencies: %w", err)
 	}
 	defer rows.Close()
-	
-	// fmt.Println(rows)
-	fmt.Println("inside GetCurrency repo step 5: attempted to print rows")
 
 	// Parse the rows of the matched currencies and get it into a list of currencies (objects)
 	var currencies []models.Currency
@@ -126,10 +120,7 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 		}
 		currencies=append(currencies, currency)
 	}
-	fmt.Println(len(currencies))
-	fmt.Println("inside GetCurrency repo method step 6: attempted to currencies")
 
-	// Check general row errors
 	if err:=rows.Err();err!=nil{
 		return nil, fmt.Errorf("error iterating rows: %w", err)
 	}
@@ -139,6 +130,6 @@ func (r *currencyRepository) GetCurrencyIDsByCode(codes []string)(map[string]uin
 	for _,currency:=range(currencies){
 		currencyMap[currency.Code]=currency.ID
 	}
-	fmt.Println(len(currencyMap))
+
 	return currencyMap, nil
 }

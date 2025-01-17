@@ -34,7 +34,6 @@ func (s *currencyService) CheckCurrenciesPopulated() (bool,error) {
 func (s *currencyService) LoadCurrencies() ([]models.Currency, error) {
 	path := filepath.Join("internal", "resources", "currencies.json")
 
-	// Read the file content
     data, err := os.ReadFile(path)
     if err != nil {
         return nil, fmt.Errorf("could not read currencies.json: %v", err)
@@ -77,14 +76,10 @@ func (s *currencyService) GetAllCurrencies()([]models.Currency, error){
 	return s.CurrencyRepo.GetCurrencies()
 }
 
-//Problem location - why is currencyRepo returning nil
 func (s *currencyService) GetCurrencyIDsByCode(codes []string)(map[string]uint, error){
-	fmt.Println("inside GetCurrency service step 3")
-	fmt.Printf("currencyService: %+v\n", s)
-	fmt.Println("This is codes:",codes)
 	if s.CurrencyRepo == nil {
-		fmt.Println("currency repository is not initialized haewww")
-		return nil, fmt.Errorf("currency repository is not initialized why nau haewww")
+		fmt.Println("currency repository is not initialized")
+		return nil, fmt.Errorf("currency repository is not initialized")
 	}
 	return s.CurrencyRepo.GetCurrencyIDsByCode(codes)
 }

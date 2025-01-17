@@ -32,11 +32,6 @@ func (h *exchangeRateHandler) UpdateRates(c echo.Context)error{
 		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error processing exchange rate API output into map"))
 	}
 
-	fmt.Println("after ratesMap")
-	fmt.Println(len(ratesMap))
-
-	//New point of error: there is no unique or exclusion constraint matching the ON CONFLICT specification for UGX
-	//Todo: Create a new migration to add unique pair constraint in postgres
 	err=h.exchangeRateService.UpsertExchangeRates(ratesMap)
 	if err!=nil{
 		fmt.Println(err)

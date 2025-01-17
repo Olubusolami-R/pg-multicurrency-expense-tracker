@@ -53,7 +53,6 @@ func (r *exchangeRateRepository) CreateMultipleExchangeRates(exchangeRates []mod
 
 	query += strings.Join(placeholders, ",")
 
-	// Execute the query
 	_, err := r.DB.Exec(query, values...)
 	if err != nil {
 		return err
@@ -73,7 +72,6 @@ func (r *exchangeRateRepository) GetAllExchangeRates()([]models.ExchangeRate, er
 
 	var exchangeRates []models.ExchangeRate
 
-	//Iterating through rows
 	for rows.Next() {
 
 		var exchangeRate models.ExchangeRate
@@ -93,7 +91,6 @@ func (r *exchangeRateRepository) GetAllExchangeRates()([]models.ExchangeRate, er
 }
 
 func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
-	// Begin transaction
 	tx, err := r.DB.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %v", err)
@@ -120,7 +117,6 @@ func (r *exchangeRateRepository) UpsertExchangeRates(exchangeRates map[string]*m
 		}
 	}
 
-	// Commit the transaction
 	err = tx.Commit()
 	if err != nil {
 		tx.Rollback()
