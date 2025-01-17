@@ -4,14 +4,12 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"strings"
 
 	"github.com/Olubusolami-R/multicurrency-tracker/internal/models"
 )
 
 type ExchangeRateRepository interface{
 	CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error
-	CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error
 	GetAllExchangeRates()([]models.ExchangeRate, error)
 	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
 	GetExchangeRate(currencyMap map[string]uint, base string, target string) (float64,error)
@@ -38,26 +36,6 @@ func (r *exchangeRateRepository) CreateSingleExchangeRate(exchangeRate models.Ex
 
 	return nil
 
-}
-
-func (r *exchangeRateRepository) CreateMultipleExchangeRates(exchangeRates []models.ExchangeRate) error {
-
-	query := "INSERT INTO exchange_rates (base_currency, target_currency, rate, updated_at) VALUES "
-	values := []interface{}{}
-	placeholders := []string{}
-
-	for i, exchangeRate := range exchangeRates{
-		placeholders = append(placeholders, fmt.Sprintf("($%d, $%d, $%d, $%d)", i*2+1, i*2+2, i*2+3, i*2+4))
-		values = append(values, exchangeRate.BaseCurrency, exchangeRate.TargetCurrency, exchangeRate.Rate, exchangeRate.UpdatedAt)
-	}
-
-	query += strings.Join(placeholders, ",")
-
-	_, err := r.DB.Exec(query, values...)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (r *exchangeRateRepository) GetAllExchangeRates()([]models.ExchangeRate, error){

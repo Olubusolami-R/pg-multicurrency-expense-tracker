@@ -16,26 +16,21 @@ import (
 
 func main(){
 
-	// Load the .env file
 	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
 
-	// Setup the database
 	database, err := db.SetupDatabase(os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"))
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 	defer database.Close()
 
-	// Set up echo
 	e := echo.New()
-
 	e.Use(middleware.CORS())
 
-	fmt.Println("Hello there!")
-
+	// Initialize repos
 	currencyRepo := repository.NewCurrencyRepository(database)
 	rateRepo:= repository.NewExchangeRateRepository(database)
 
@@ -56,7 +51,8 @@ func main(){
 	e.POST("/update-rates", rateHandler.UpdateRates)
 	e.GET("/fetch-currencies", currencyHandler.GetCurrencies)
 	e.GET("/fetch-rate", rateHandler.GetExchangeRate)
-	// Start the server
+
+
 	e.Logger.Fatal(e.Start(":8080"))
 
 	
