@@ -40,7 +40,7 @@ func (r *exchangeRateRepository) CreateSingleExchangeRate(exchangeRate models.Ex
 
 func (r *exchangeRateRepository) GetAllExchangeRates()([]models.ExchangeRate, error){
 
-	query:="SELECT base_currency, target_currency, rate, updated_at FROM exchange_rates"
+	query:="SELECT base_currency, target_currency, rate FROM exchange_rates"
 
 	rows,err:=r.DB.Query(query)
 	if err != nil {
@@ -54,7 +54,7 @@ func (r *exchangeRateRepository) GetAllExchangeRates()([]models.ExchangeRate, er
 
 		var exchangeRate models.ExchangeRate
 
-		if err := rows.Scan(&exchangeRate.BaseCurrency, &exchangeRate.TargetCurrency, &exchangeRate.Rate, &exchangeRate.UpdatedAt); err != nil {
+		if err := rows.Scan(&exchangeRate.BaseCurrency, &exchangeRate.TargetCurrency, &exchangeRate.Rate); err != nil {
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}
 

@@ -115,7 +115,7 @@ func (s *exchangeRateService) ProcessAPIOutput(jsonData []byte)(map[string]*mode
 }
 
 func (s *exchangeRateService) CreateSingleExchangeRate(exchangeRate models.ExchangeRate) error {
-	return s.Repo.CreateSingleExchangeRate(exchangeRate)
+	return s.Repo.CreateSingleExchangeRate(exchangeRate) //handler not created
 }
 
 func (s *exchangeRateService) UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error{
@@ -135,3 +135,6 @@ func (s *exchangeRateService) GetExchangeRate(base string, target string)(float6
 	return s.Repo.GetExchangeRate(currencyMap, base, target)
 }
 
+func (s *exchangeRateService) GetAllExchangeRates()([]models.ExchangeRate, error){
+	return s.Repo.GetAllExchangeRates()
+}

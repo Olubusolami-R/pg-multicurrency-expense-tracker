@@ -56,3 +56,4 @@ func (h* exchangeRateHandler) GetExchangeRate(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, rate)
 }
+

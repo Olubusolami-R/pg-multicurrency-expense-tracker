@@ -60,7 +60,7 @@ func (s *currencyService) LoadCurrencies() ([]models.Currency, error) {
 }
 
 func (s *currencyService) CreateSingleCurrency(currency models.Currency) error {
-	return s.CurrencyRepo.CreateSingleCurrency(currency)
+	return s.CurrencyRepo.CreateSingleCurrency(currency) //handler not created
 }
 
 func (s *currencyService) CreateMultipleCurrencies(currencies []models.Currency) error {
