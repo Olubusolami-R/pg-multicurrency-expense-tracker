@@ -54,9 +54,7 @@ func main(){
 	e.GET("/fetch-currencies", currencyHandler.GetCurrencies)
 	e.GET("/fetch-rate", rateHandler.GetExchangeRate)
 	e.GET("/fetch-rates",rateHandler.GetAllExchangeRates)
-
+	e.POST("/create-expense",expenseHandler.CreateExpense)
 
 	e.Logger.Fatal(e.Start(":8080"))
-
-	
 }

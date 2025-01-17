@@ -24,13 +24,14 @@ func NewExpenseRepository(db *sql.DB) ExpenseRepository{
 
 func (r *expenseRepository) CreateExpense(expense *models.Expense) error {
 
-	query := "INSERT INTO expenses (description, amount, currency, createdAt) VALUES ($1, $2, $3, $4)"
+	query := "INSERT INTO expenses (description, amount, currency, created_at) VALUES ($1, $2, $3, $4)"
 	
 	_,err := r.DB.Exec(query, expense.Description, expense.Amount, expense.Currency, expense.CreatedAt)
 	if err != nil {
+		fmt.Println("debug 9: Here's the error: %w",err)
 		return err
 	}
-
+	fmt.Println("Debug successful; Expense created.")
 	return nil
 }
 

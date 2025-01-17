@@ -28,9 +28,12 @@ func (s *expenseService) CreateExpense(expenseData map[string]interface{}) error
 
 	currencyCode:=expenseData["currency"].(string)
 
+	fmt.Println("debug 4: error here on currencyCode",currencyCode)
 	//Because GetCurrencyIDsByCode needs a slice
 	var codeSlice []string
 	codeSlice = append(codeSlice, currencyCode)
+
+	fmt.Println("debug 5: error here on currencyCodeSlice",codeSlice)
 
 	result,err:=s.currencyService.GetCurrencyIDsByCode(codeSlice)
 	if err!=nil{
@@ -38,8 +41,12 @@ func (s *expenseService) CreateExpense(expenseData map[string]interface{}) error
 		return fmt.Errorf("error getting expense currency code: %w",err)
 	}
 
+	fmt.Println("debug 6: check result",result)
+
 	// now create expense object
-	expenseCurrencyID:= result["code"]
+	expenseCurrencyID:= result[currencyCode]
+
+	fmt.Println("debug 7: check expenseCurrencyID",expenseCurrencyID)
 
 	expense:=&models.Expense{
 		Description: expenseData["description"].(string),
@@ -47,6 +54,8 @@ func (s *expenseService) CreateExpense(expenseData map[string]interface{}) error
 		Currency: expenseCurrencyID,
 		CreatedAt: time.Now()}
 
+	fmt.Println("debug 8: check expense model object",expense)
+	
 	return s.ExpenseRepo.CreateExpense(expense)
 } 
 
