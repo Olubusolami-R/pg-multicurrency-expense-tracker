@@ -42,3 +42,16 @@ func (h *exchangeRateHandler) UpdateRates(c echo.Context)error{
 
 	return c.JSON(http.StatusOK, "Rates updated successfully! Check Postgres.")
 }
+
+func (h* exchangeRateHandler) GetExchangeRate(c echo.Context) error {
+	baseCurrency:=c.QueryParam("base")
+	targetCurrency:=c.QueryParam("target")
+
+	rate, err:=h.exchangeRateService.GetExchangeRate(baseCurrency,targetCurrency)
+	if err!=nil{
+		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error getting exchange rate"))
+	}
+	fmt.Printf("The exchange rate from %s to %s rate is %f",baseCurrency,targetCurrency,rate)
+
+	return c.JSON(http.StatusOK, rate)
+}
