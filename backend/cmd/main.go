@@ -32,14 +32,17 @@ func main(){
 	// Initialize repos
 	currencyRepo := repository.NewCurrencyRepository(database)
 	rateRepo:= repository.NewExchangeRateRepository(database)
+	expenseRepo:=repository.NewExpenseRepository(database)
 
 	// Initialize services
 	currencyService := services.NewCurrencyService(currencyRepo)
 	rateService:=services.NewExchangeRateService(rateRepo,currencyService)
+	expenseService:=services.NewExpenseService(expenseRepo,currencyService)
 
 	// Initialize handlers
 	currencyHandler := apis.NewCurrencyHandler(currencyService)
 	rateHandler:=apis.NewExchangeRateHandler(rateService)
+	expenseHandler:=apis.NewExpenseHandler(expenseService)
 	
 	// Optionally check and populate currencies
 	err = currencyHandler.PopulateCurrencies()
