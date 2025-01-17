@@ -17,7 +17,7 @@ type ExchangeRateService interface{
 	ProcessAPIOutput(jsonData []byte)(map[string]*models.ExchangeRate,error)
 	UpsertExchangeRates(exchangeRates map[string]*models.ExchangeRate) error
 	GetExchangeRate(base string, target string)(float64, error)
-	GetAllExchangeRates()([]models.ExchangeRate, error)
+	GetAllExchangeRates()([]interface{}, error)
 }
 
 type exchangeRateService struct{
@@ -136,7 +136,7 @@ func (s *exchangeRateService) GetExchangeRate(base string, target string)(float6
 	return s.Repo.GetExchangeRate(currencyMap, base, target)
 }
 
-func (s *exchangeRateService) GetAllExchangeRates()([]models.ExchangeRate, error){
+func (s *exchangeRateService) GetAllExchangeRates()([]interface{}, error){
 	rates,err:=s.Repo.GetAllExchangeRates()
 	if err!=nil{
 		return nil,fmt.Errorf("unable to retrieve all rates: %w", err)
@@ -147,7 +147,25 @@ func (s *exchangeRateService) GetAllExchangeRates()([]models.ExchangeRate, error
 	for _,rateObject := range rates{
 		processedRate:=make(map[string]interface{})
 
-		processedRate["baseCurrency"]=s.currencyService.
+		base,err:=s.currencyService.GetCurrencyCodeByID(rateObject.BaseCurrency)
+		if err!=nil{
+			fmt.Println("Error retrieving baseCurrency code")
+			return nil,fmt.Errorf("unable to retrieve baseCurrency code: %w", err)
+		}
+
+		target,err:=s.currencyService.GetCurrencyCodeByID(rateObject.TargetCurrency)
+		if err!=nil{
+			fmt.Println("Error retrieving targetCurrency code")
+			return nil,fmt.Errorf("unable to retrieve targetCurrency code: %w", err)
+		}
+
+
+		processedRate["baseCurrency"]=base
+		processedRate["targetCurrency"]=target
+		processedRate["rate"]=rateObject.Rate
+
+		processedRates = append(processedRates, processedRate)
 	}
 	
+	return processedRates,nil
 }

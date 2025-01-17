@@ -17,6 +17,7 @@ type CurrencyService interface{
 	GetAllCurrencies()([]models.Currency, error)
 	GetCurrencyIDsByCode(codes []string)(map[string]uint, error)
 	CheckCurrenciesPopulated() (bool,error)
+	GetCurrencyCodeByID(id uint)(string,error)
 }
 
 type currencyService struct {
@@ -82,4 +83,8 @@ func (s *currencyService) GetCurrencyIDsByCode(codes []string)(map[string]uint, 
 		return nil, fmt.Errorf("currency repository is not initialized")
 	}
 	return s.CurrencyRepo.GetCurrencyIDsByCode(codes)
+}
+
+func (s *currencyService) GetCurrencyCodeByID(id uint)(string,error){
+	return s.CurrencyRepo.GetCurrencyCodeByID(id)
 }

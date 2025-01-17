@@ -15,6 +15,7 @@ type CurrencyRepository interface {
 	GetCurrencies()([]models.Currency, error)
 	GetCurrencyIDsByCode(codes []string)(map[string]uint, error)
 	CheckCurrenciesPopulated() (bool,error)
+	GetCurrencyCodeByID(id uint)(string,error)
 }
 
 // Handles database operations for currency
