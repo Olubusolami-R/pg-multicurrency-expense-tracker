@@ -10,6 +10,7 @@ import (
 
 type ExchangeRateHandler interface{
 	UpdateRates(c echo.Context)error
+	GetExchangeRate(c echo.Context) error
 }
 
 type exchangeRateHandler struct {

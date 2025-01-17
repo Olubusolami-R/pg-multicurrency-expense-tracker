@@ -39,11 +39,11 @@ func main(){
 	currencyRepo := repository.NewCurrencyRepository(database)
 	rateRepo:= repository.NewExchangeRateRepository(database)
 
-	// Initialize service
+	// Initialize services
 	currencyService := services.NewCurrencyService(currencyRepo)
 	rateService:=services.NewExchangeRateService(rateRepo,currencyService)
 
-	// Initialize handler
+	// Initialize handlers
 	currencyHandler := apis.NewCurrencyHandler(currencyService)
 	rateHandler:=apis.NewExchangeRateHandler(rateService)
 	
@@ -55,6 +55,7 @@ func main(){
 
 	e.POST("/update-rates", rateHandler.UpdateRates)
 	e.GET("/fetch-currencies", currencyHandler.GetCurrencies)
+	e.GET("/fetch-rate", rateHandler.GetExchangeRate)
 	// Start the server
 	e.Logger.Fatal(e.Start(":8080"))
 
