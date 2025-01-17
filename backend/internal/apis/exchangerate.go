@@ -11,6 +11,7 @@ import (
 type ExchangeRateHandler interface{
 	UpdateRates(c echo.Context)error
 	GetExchangeRate(c echo.Context) error
+	GetAllExchangeRates(c echo.Context) error
 }
 
 type exchangeRateHandler struct {
@@ -57,3 +58,10 @@ func (h* exchangeRateHandler) GetExchangeRate(c echo.Context) error {
 	return c.JSON(http.StatusOK, rate)
 }
 
+func (h* exchangeRateHandler) GetAllExchangeRates(c echo.Context) error {
+	rates,err:=h.exchangeRateService.GetAllExchangeRates()
+	if err!=nil{
+		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error fetching all exchange rates"))
+	}
+	return c.JSON(http.StatusOK, rates)
+}

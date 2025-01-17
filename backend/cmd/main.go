@@ -50,6 +50,7 @@ func main(){
 	e.POST("/update-rates", rateHandler.UpdateRates)
 	e.GET("/fetch-currencies", currencyHandler.GetCurrencies)
 	e.GET("/fetch-rate", rateHandler.GetExchangeRate)
+	e.GET("/fetch-rates",rateHandler.GetAllExchangeRates)
 
 
 	e.Logger.Fatal(e.Start(":8080"))
