@@ -55,5 +55,5 @@ func (h *currencyHandler) GetCurrencies(c echo.Context)error{
 		return c.JSON(http.StatusInternalServerError,fmt.Errorf("error fetching all currencies :%w", err))
 	}
 	fmt.Println(currencies)
-	return c.JSON(http.StatusOK, "Currencies fetched, Check terminal.")
+	return c.JSON(http.StatusOK, currencies)
 }

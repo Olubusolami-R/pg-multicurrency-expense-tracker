@@ -73,7 +73,7 @@ func (r *currencyRepository) CreateMultipleCurrencies(currencies []models.Curren
 
 func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
-	query:="SELECT code, name FROM currencies"
+	query:="SELECT id, code, name FROM currencies"
 
 	
 	rows,err:=r.DB.Query(query)
@@ -88,7 +88,7 @@ func (r *currencyRepository) GetCurrencies()([]models.Currency, error){
 
 		var currency models.Currency
 
-		if err := rows.Scan(&currency.Code, &currency.Name); err != nil {
+		if err := rows.Scan(&currency.ID,&currency.Code, &currency.Name); err != nil {
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}
 
